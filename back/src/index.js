@@ -10,13 +10,13 @@ app.use((error, request, response, next) => {
   response.sendStatus(500);
 })
 
-app.get('/time/:from/:pick/:to', async (req, res) => {
+app.get('/time/:from/:pick/:destination', async (req, res) => {
   try {
     const from = req.params.from.toUpperCase();
     const pick = req.params.pick.toUpperCase();
-    const to = req.params.to.toUpperCase();
+    const destination = req.params.destination.toUpperCase();
 
-    if (!checkPositionExists(from, pick, to)) {
+    if (!checkPositionExists(from, pick, destination)) {
       res.json({ 'Error' : 'Please, fix the positions, there is at least 1 that is wrong.' })
       return
     } 
@@ -24,13 +24,12 @@ app.get('/time/:from/:pick/:to', async (req, res) => {
     const times = await getData();
     
     const { time: timeToPick, path: pathToPick} = getResult(times, from, pick);
-    const { time: timeToDelivery, path: pathToDelivery } = getResult(times, pick, to);
+    const { time: timeToDelivery, path: pathToDelivery } = getResult(times, pick, destination);
 
     const totalTime = getTotalTime(timeToPick, timeToDelivery);
     const fullPath = getFullPath(pathToPick, pathToDelivery);
     
     res.json({ 'Total' : totalTime.toFixed(2), 'Path' : fullPath })
-    // res.json({ 'Total' : '0'})
 
   } catch (error) {
     console.error(error);

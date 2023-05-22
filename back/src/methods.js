@@ -45,8 +45,6 @@ function getResult(graph, start, end) {
     currentVertex = predecessors[currentVertex];
   }
   
-  // return time[end];
-  // console.log({ distance: time[end], path })
   return { time: time[end], path };
 }
 
@@ -77,10 +75,9 @@ function getTotalTime(timeToPick, timeToDelivery) {
   }
 }
 
-function checkPositionExists(from, pick, to) {
+function checkPositionExists(from, pick, destination) {
   var regex = /^[A-H][1-8]$/;
-  console.log(from, pick, to)
-  return regex.test(from) && regex.test(pick) && regex.test(to);
+  return regex.test(from) && regex.test(pick) && regex.test(destination);
 }
 
 module.exports = { getData, getResult, getFullPath, getTotalTime, checkPositionExists }
