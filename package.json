@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "axios": "^1.4.0",
+    "express": "^4.18.2",
+    "priorityqueuejs": "^2.0.0"
+  },
+  "name": "fastest-route",
+  "description": "Get the fastest route to pick and delivery the package.",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edimardaros/fastest-route.git"
+  },
+  "author": "Edimar Daros Nascimento",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/edimardaros/fastest-route/issues"
+  },
+  "homepage": "https://github.com/edimardaros/fastest-route#readme"
+}
