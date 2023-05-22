@@ -1,18 +1,28 @@
 const express = require('express');
-const axios = require('axios');
+
+const { getData, getResult } = require('./methods')
 const app = express();
 
+app.use(express.json());
 
-app.get('/time/:from/:to', async (req, res) => {
+app.use((error, request, response, next) => {
+  console.error(error);
+  response.sendStatus(500);
+})
+
+app.get('/time/:from/:pick/:to', async (req, res) => {
   try {
-    const from = req.params.from;
-    const to = req.params.to;
+    const from = req.params.from.toUpperCase();
+    const pick = req.params.pick.toUpperCase();
+    const to = req.params.to.toUpperCase();
 
-    // Request JSON data
-    const response = await axios.get('https://mocki.io/v1/10404696-fd43-4481-a7ed-f9369073252f');
-    const time = response.data;
-
-    res.json({ time })
+    const times = await getData();
+    const timeToPick = getResult(times, from, pick);
+    const timeToDelivery = getResult(times, pick, to);
+    const totalTime = await timeToPick + await timeToDelivery
+    console.log(totalTime);
+    
+    res.json({ 'Total:' : totalTime })
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Error while getting API information.' })
@@ -20,5 +30,5 @@ app.get('/time/:from/:to', async (req, res) => {
 })
 
 app.listen(3000, () => {
-  console.log('Servidor rodando na porta 3000.')
+  console.log('Runnin on port 3000.')
 })
