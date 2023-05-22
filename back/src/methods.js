@@ -3,22 +3,23 @@ const axios = require('axios');
 const apiUrl = 'https://mocki.io/v1/10404696-fd43-4481-a7ed-f9369073252f'
 
 
-// dijkstra based
 function getResult(graph, start, end) {
-  const distances = {};
+  const time = {};
+  const predecessors = {};
   const pq = new PriorityQueue((a, b) => a[1] - b[1]);
   
   Object.keys(graph).forEach((vertex) => {
-    distances[vertex] = Infinity;
+    time[vertex] = Infinity;
+    predecessors[vertex] = null;
   });
-  distances[start] = 0;
+  time[start] = 0;
   
   pq.enq([start, 0]);
   
   while (!pq.isEmpty()) {
     const [currentVertex, currentDistance] = pq.deq();
     
-    if (currentDistance > distances[currentVertex]) {
+    if (currentDistance > time[currentVertex]) {
       continue;
     }
     
@@ -28,14 +29,25 @@ function getResult(graph, start, end) {
       const weight = neighbors[neighbor];
       const distance = currentDistance + weight;
       
-      if (distance < distances[neighbor]) {
-        distances[neighbor] = distance;
+      if (distance < time[neighbor]) {
+        time[neighbor] = distance;
+        predecessors[neighbor] = currentVertex;
         pq.enq([neighbor, distance]);
       }
     });
   }
+
+  const path = [];
+  let currentVertex = end;
+
+  while (currentVertex !== null) {
+    path.unshift(currentVertex);
+    currentVertex = predecessors[currentVertex];
+  }
   
-  return distances[end];
+  // return time[end];
+  // console.log({ distance: time[end], path })
+  return { time: time[end], path };
 }
 
 
@@ -48,5 +60,27 @@ async function getData() {
   return time;
 }
 
+function getFullPath(pathToPick, pathToDelivery) {
+  try {
+    pathToDelivery.splice(0, 1);
+    return pathToPick.concat(pathToDelivery);
+  } catch (error) {
+    console.error('Failed to get the Full Path.');
+  }
+}
 
-module.exports = { getResult, getData }
+function getTotalTime(timeToPick, timeToDelivery) {
+  try {
+    return timeToPick + timeToDelivery;
+  } catch (error) {
+    console.error('Failed to get the Total Time.');
+  }
+}
+
+function checkPositionExists(from, pick, to) {
+  var regex = /^[A-H][1-8]$/;
+  console.log(from, pick, to)
+  return regex.test(from) && regex.test(pick) && regex.test(to);
+}
+
+module.exports = { getData, getResult, getFullPath, getTotalTime, checkPositionExists }
